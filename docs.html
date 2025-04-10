@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wi-Fi Voucher Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Wi-Fi Voucher Generator</h2>
+  <label for="count">Number of Vouchers</label>
+  <input type="number" id="count" min="1" max="100" value="5">
+
+  <label for="duration">Duration</label>
+  <select id="duration">
+    <option value="1h">1 Hour</option>
+    <option value="6h">6 Hours</option>
+    <option value="24h">24 Hours</option>
+    <option value="7d">7 Days</option>
+  </select>
+
+  <button onclick="generateVouchers()">Generate Vouchers</button>
+  <button onclick="exportCSV()" style="margin-top: 10px; background: #3498db;">Export as CSV</button>
+
+  <table id="voucherTable">
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Duration</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const vouchers = [];
+
+  function generateCode(length = 8) {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < length; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  }
+
+  function generateVouchers() {
+    const count = parseInt(document.getElementById("count").value);
+    const duration = document.getElementById("duration").value;
+    const tableBody = document.querySelector("#voucherTable tbody");
+
+    for (let i = 0; i < count; i++) {
+      const code = generateCode();
+      vouchers.push({ code, duration });
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${code}</td>
+        <td>${duration}</td>
+        <td><button class="delete-btn" onclick="deleteVoucher(this, '${code}')">Delete</button></td>
+      `;
+      tableBody.appendChild(row);
+    }
+  }
+
+  function deleteVoucher(btn, code) {
+    const row = btn.closest("tr");
+    row.remove();
+    const index = vouchers.findIndex(v => v.code === code);
+    if (index > -1) vouchers.splice(index, 1);
+  }
+
+  function exportCSV() {
+    if (vouchers.length === 0) {
+      alert("No vouchers to export.");
+      return;
+    }
+
+    const rows = [["Code", "Duration"], ...vouchers.map(v => [v.code, v.duration])];
+    let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "wifi_vouchers.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+</script>
+
+</body>
+</html>
