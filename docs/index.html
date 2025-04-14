@@ -3,17 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wi-Fi Voucher App</title>
-  <link rel="stylesheet" href="f.css">
+  <title>Wi-Fi Voucher Generator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <h1>Wi-Fi Voucher Generator</h1>
-
-    <button onclick="generateVoucher()">Generate Voucher</button>
-
-    <div id="voucher-output"></div>
-    
     <form id="voucher-form">
       <label for="voucher-code">Voucher Code:</label>
       <input type="text" id="voucher-code" required>
@@ -38,12 +33,11 @@
       <p><strong>Wi-Fi SSID:</strong> <span id="ssid-display"></span></p>
       <p><strong>Duration:</strong> <span id="duration-display"></span></p>
       <p><strong>Expiration:</strong> <span id="expiration-display"></span></p>
-      <canvas id="qrcode" style=margin-top:  20px;></canvas>
+      <canvas id="qrcode"></canvas>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="java.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
